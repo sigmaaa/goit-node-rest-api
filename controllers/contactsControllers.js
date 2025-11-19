@@ -1,3 +1,4 @@
+import HttpError from "../helpers/HttpError.js";
 import * as contactsServices from "../services/contactsServices.js";
 
 export const getAllContacts = async (req, res, next) => {
@@ -29,7 +30,7 @@ export const deleteContact = async (req, res) => {
   if (!removedContact) {
     throw HttpError(404, `Not found`);
   }
-  res.json({ removedContact });
+  res.json(removedContact);
 };
 
 export const createContact = async (req, res) => {
