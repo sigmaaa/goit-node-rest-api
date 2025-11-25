@@ -50,10 +50,10 @@ export const updateContact = async (req, res) => {
 
 export const updateStatusContact = async (req, res, next) => {
   try {
-    const { contactId } = req.params;
+    const { id } = req.params;
     const body = req.body;
 
-    const contact = await contactsServices.updateStatusContact(contactId, body);
+    const contact = await contactsServices.updateStatusContact(id, body);
     if (!contact) {
       throw HttpError(404, "Not found");
     }
