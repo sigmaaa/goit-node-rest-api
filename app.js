@@ -6,6 +6,8 @@ import { ValidationError } from "sequelize";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import connectDatabase from "./db/connectDatabase.js";
+import authRouter from "./routes/authRouter.js";
+import authenticate from "./middlewares/authenticate.js";
 
 const app = express();
 
@@ -13,6 +15,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
