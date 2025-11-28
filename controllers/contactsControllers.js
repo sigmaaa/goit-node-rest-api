@@ -3,7 +3,8 @@ import * as contactsServices from "../services/contactsServices.js";
 
 export const getAllContacts = async (req, res, next) => {
   try {
-    const contacts = await contactsServices.listContacts();
+    const ownerId = req.user.id;
+    const contacts = await contactsServices.listContacts(ownerId);
 
     res.status(200).json({
       status: "success",
@@ -17,7 +18,8 @@ export const getAllContacts = async (req, res, next) => {
 
 export const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const contact = await contactsServices.getContactById(id);
+  const ownerId = req.user.id;
+  const contact = await contactsServices.getContactById(id, ownerId);
   if (!contact) {
     throw HttpError(404, `Not found`);
   }
@@ -26,7 +28,8 @@ export const getOneContact = async (req, res) => {
 
 export const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const removedContact = await contactsServices.removeContact(id);
+  const ownerId = req.user.id;
+  const removedContact = await contactsServices.removeContact(id, ownerId);
   if (!removedContact) {
     throw HttpError(404, `Not found`);
   }
@@ -34,14 +37,24 @@ export const deleteContact = async (req, res) => {
 };
 
 export const createContact = async (req, res) => {
-  const newContact = await contactsServices.addContact(req.body);
+  const ownerId = req.user.id;
+
+  const newContact = await contactsServices.addContact({
+    ...req.body,
+    owner: ownerId,
+  });
 
   res.status(201).json(newContact);
 };
 
 export const updateContact = async (req, res) => {
   const { id } = req.params;
-  const updatedContact = await contactsServices.updateContact(id, req.body);
+  const ownerId = req.user.id;
+  const updatedContact = await contactsServices.updateContact(
+    id,
+    ownerId,
+    req.body
+  );
   if (!updatedContact) {
     throw HttpError(404, `Not found`);
   }
@@ -51,9 +64,14 @@ export const updateContact = async (req, res) => {
 export const updateStatusContact = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const ownerId = req.user.id;
     const body = req.body;
 
-    const contact = await contactsServices.updateStatusContact(id, body);
+    const contact = await contactsServices.updateStatusContact(
+      id,
+      ownerId,
+      body
+    );
     if (!contact) {
       throw HttpError(404, "Not found");
     }
