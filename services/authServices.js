@@ -1,12 +1,18 @@
+import * as fs from "node:fs/promises";
+import path from "node:path";
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
-import User from "../db/models/User.js";
+import User from "../db/models/user.js";
 import HttpError from "../helpers/HttpError.js";
 import { createToken } from "../helpers/jwt.js";
 
+const avatarDir = path.resolve("public", "avatars");
 export const registerUser = async (payload) => {
   const { email, password } = payload;
+  const avatarURL = gravatar.url(email);
 
   const user = await User.findOne({
     where: { email },
@@ -19,6 +25,7 @@ export const registerUser = async (payload) => {
 
   return User.create({
     ...payload,
+    avatarURL: avatarURL,
     password: hashPassword,
   });
 };
@@ -56,5 +63,14 @@ export const findUser = (where) => User.findOne({ where });
 export const logoutUser = async (user) => {
   await user.update({ token: null });
 
+  return true;
+};
+
+export const updateAvatar = async (user, file) => {
+  if (file) {
+    const newPath = path.join(avatarDir, file.filename);
+    await fs.rename(file.path, newPath);
+    await user.update({ avatarURL: newPath });
+  }
   return true;
 };

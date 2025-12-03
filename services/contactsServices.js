@@ -1,4 +1,4 @@
-import Contact from "../db/models/Contact.js";
+import Contact from "../db/models/contact.js";
 
 const listContacts = (ownerId) =>
   Contact.findAll({
@@ -7,7 +7,7 @@ const listContacts = (ownerId) =>
     },
   });
 
-const addContact = (payload) => Contact.create(payload);
+const addContact = (payload) => Contact.create(payloadc);
 
 const getContactById = (id, ownerId) =>
   Contact.findOne({

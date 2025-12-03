@@ -2,6 +2,7 @@ import {
   loginUser,
   logoutUser,
   registerUser,
+  updateAvatar,
 } from "../services/authServices.js";
 
 export const registerController = async (req, res, next) => {
@@ -43,5 +44,13 @@ export const getCurrentController = async (req, res, next) => {
   res.json({
     email,
     subscription,
+  });
+};
+
+export const updateAvatarController = async (req, res, next) => {
+  await updateAvatar(req.user, req.file);
+
+  res.status(200).json({
+    avatarURL: req.user.avatarURL,
   });
 };
