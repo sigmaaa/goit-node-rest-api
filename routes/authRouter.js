@@ -8,12 +8,20 @@ import {
   logoutController,
   getCurrentController,
   updateAvatarController,
+  verifyController,
+  resendVerifyController,
 } from "../controllers/authControllers.js";
-import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
+import {
+  registerSchema,
+  loginSchema,
+  emailSchema,
+} from "../schemas/authSchemas.js";
 import authenticate from "../middlewares/authenticate.js";
 
 const authRouter = express.Router();
 authRouter.post("/register", validateBody(registerSchema), registerController);
+authRouter.get("/verify/:verificationToken", verifyController);
+authRouter.post("/verify", validateBody(emailSchema), resendVerifyController);
 authRouter.post("/login", validateBody(loginSchema), loginController);
 authRouter.post("/logout", authenticate, logoutController);
 authRouter.get("/current", authenticate, getCurrentController);
