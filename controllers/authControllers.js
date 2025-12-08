@@ -70,6 +70,6 @@ export const resendVerifyController = async (req, res) => {
   await resendVerifyUser(req.body);
 
   res.json({
-    message: "Verification has been passed",
+    message: "Verification email sent",
   });
 };
